@@ -1,4 +1,3 @@
-# UnityProjects
 # Overwiew
 
 This is a collection of personal projects written in C-Sharp and developed on the Unity game engine.
