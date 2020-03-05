@@ -638,7 +638,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                         candidate.Partition();
                         for (int i = 0; i < candidate.Contents.Count; i++)
                         {
-                            // Propagate the contents of an octant to it's children.
+                            // Propagate the contents of an octant to its children.
                             List<Octant<Sphere>> list = OverlappedOctants(candidate, candidate.Contents[i], distance);
                             for (int j = 0; j < list.Count; j++)
                             {
