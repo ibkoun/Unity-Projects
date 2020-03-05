@@ -16,7 +16,7 @@ Create a 3D graph that can be dragged around inside the scene like a chain by us
 Create spheres inside a bounding box randomly without overlaps. Each sphere can have different size, and a minimum distance can be defined for every spheres. Three methods are used to test whether a newly inserted sphere collides with the existing ones :
 * Naive method : Iterate normally through a list of spheres until a collision occurs.
 * Random method : Iterate randomly through a list of spheres until a collision occurs.
-* Octree method : Iterate through a list of spheres occupying the space where the new sphere landed until a collision occurs.
+* Octree method : Iterate through a list of spheres occupying the space, where the new sphere landed, until a collision occurs.
 
 ## Others
 Contain some accessory classes.
