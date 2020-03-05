@@ -18,7 +18,7 @@ Create spheres inside a bounding box randomly without overlaps. Each sphere can 
 * Random method : Iterate randomly through a list of spheres until a collision occurs.
 * Octree method : Iterate through a list of spheres occupying the space, where the new sphere landed, until a collision occurs.
 
-#### Notes : Debug lines can be disabled if the program is slow.
+#### Notes : Debug lines can slow down the program.
 
 ## Others
 Contain some accessory classes.
