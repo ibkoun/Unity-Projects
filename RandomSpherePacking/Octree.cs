@@ -11,7 +11,7 @@ public class Octree<T>
     public Octree(Vector3 center, Vector3 size)
     {
         Root = new Octant<T>();
-        Root.Center = center;
+        Root.Centerpoint = center;
         Root.Depth = 0;
         Root.Size = size; 
     }
@@ -23,7 +23,7 @@ public class Octree<T>
         else
         {
             int index;
-            Vector3 direction = point - octant.Center;
+            Vector3 direction = point - octant.Centerpoint;
             if (direction.x > 0 && direction.y > 0 && direction.z < 0) index = 0;
             else if (direction.x < 0 && direction.y > 0 && direction.z < 0) index = 1;
             else if (direction.x < 0 && direction.y < 0 && direction.z < 0) index = 2;
