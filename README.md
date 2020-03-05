@@ -5,6 +5,10 @@ This is a collection of projects written in C-Sharp and developed on the game en
 Latest version of Unity and Microsoft Visual Studio.
 
 # Table of contents
+
+## Cameras
+Contain different type of camera that can be found in video games (only first-person for now).
+
 ## Graph
 Create a 3D graph that can be dragged around inside the scene like a chain by using inverse kinematics (only works for open chains for now).
 
