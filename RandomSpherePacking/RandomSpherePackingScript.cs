@@ -516,10 +516,10 @@ public class RandomSpherePackingScript : MonoBehaviour
     }
 
     /*
-     * Naive method that iterates through each pair of spheres to test whether they collide with each other
+     * Iterate through each pair of spheres to test whether they collide with each other
      * (used to confirm that the following collision detection methods work).
      */
-    public bool SpheresCollisionDetection()
+    public bool ExhaustiveCollisionDetection()
     {
         for (int i = 0; i < spheres.Count; i++)
         {
@@ -534,8 +534,8 @@ public class RandomSpherePackingScript : MonoBehaviour
         return false;
     }
 
-    // Test whether a sphere collides with another one by iterating through all the existing spheres.
-    public bool NaiveCollisionDetection(List<Sphere> spheres, Sphere sphere, float distance)
+    // Test whether a sphere collides with another using a linear search on the list of existing spheres.
+    public bool LinearCollisionDetection(List<Sphere> spheres, Sphere sphere, float distance)
     {
         int comparisons = 0;
         for (int i = 0; i < spheres.Count; i++)
@@ -543,15 +543,15 @@ public class RandomSpherePackingScript : MonoBehaviour
             comparisons++;
             if (SphereIntersectsSphere(sphere.Radius, spheres[i].Radius, sphere.Centerpoint, spheres[i].Centerpoint, distance))
             {
-                Debug.Log("Comparisons until collision (naive): " + comparisons);
+                Debug.Log("Linear search (collision) = " + comparisons + " comparisons");
                 return false;
             }
         }
-        Debug.Log("Comparisons without collision (naive): " + comparisons);
+        Debug.Log("Linear search (no collision) = " + comparisons + " comparisons");
         return true;
     }
 
-    // Test whether a sphere collides with another one by iterating randomly through existing spheres.
+    // Test whether a sphere collides with another using a random search on the list of existing spheres.
 
     public bool RandomCollisionDetection(List<Sphere> spheres, Sphere sphere, float distance, System.Random seed)
     {
@@ -565,23 +565,25 @@ public class RandomSpherePackingScript : MonoBehaviour
             int i = seed.Next(0, list.Count);
             if (SphereIntersectsSphere(sphere.Radius, list[i].Radius, sphere.Centerpoint, list[i].Centerpoint, distance))
             {
-                Debug.Log("Comparisons until collision (random): " + comparisons);
+                Debug.Log("Random search (collision) = " + comparisons + " comparisons");
                 return true;
             }
             list.RemoveAt(i);
         }
-        Debug.Log("Comparisons without collision (random): " + comparisons);
+        Debug.Log("Random search (no collision) = " + comparisons + " comparisons");
         return false;
     }
 
-    // Test whether a sphere collides with another one by iterating through all the octants the sphere overlaps.
+    // Test whether a sphere collides with another by searching inside an octree of existing spheres.
     public bool OctreeCollisionDetection(Octant<Sphere> octant, Sphere sphere, float distance)
     {
-        int comparisons = 0;
+        int visits = 0; // Number of octants that have been visited.
+        int recursions = 0; // Number of times the search was split.
+        int comparisons = 0; // Number of existing spheres that have been tested against the new sphere.
         List<Octant<Sphere>> queue = new List<Octant<Sphere>>(); // Octants that can contain spheres that will collide with the new one.
         List<Octant<Sphere>> octants = new List<Octant<Sphere>>(); // Octants that will be updated if they passed the collision test.
 
-        // Inserting the first sphere.
+        // Insert the first sphere.
         if (octant.Contents.Count == 0)
         {
             if (SphereWithinBox(sphere.Radius, sphere.Centerpoint, octant.Size, octant.Centerpoint))
@@ -592,14 +594,15 @@ public class RandomSpherePackingScript : MonoBehaviour
             return true;
         }
 
-        // Inserting the spheres following the first one.
+        // Perform a breadth-first search before inserting the spheres after the first one.
         queue.Add(octant);
         while (queue.Count > 0)
         {
+            visits++;
             Octant<Sphere> candidate = queue[0]; // Octant that will be tested for a collision.
             queue.RemoveAt(0);
 
-            // The octant doesn't contain any child.
+            // The octant doesn't contain any children.
             if (candidate.Leaves == null)
             {
                 // The octant contains at least one sphere.
@@ -613,7 +616,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                         // This is where we will test for any collision.
                         if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                         {
-                            Debug.Log("Comparisons until collision (octree): " + comparisons);
+                            Debug.Log("Octree search (collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
                             return true;
                         }
                     }
@@ -633,7 +636,8 @@ public class RandomSpherePackingScript : MonoBehaviour
                         }
                     }
                     else partition = false;
-                    // Only if the new sphere and the existing ones can fit inside a child of a partitioned octant.
+
+                    // Only partition an octant if its children can contain the new sphere and the existing ones.
                     if (partition)
                     {
                         candidate.Partition();
@@ -650,6 +654,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                     List<Octant<Sphere>> candidates = OverlappedOctants(candidate, sphere, distance);
                     octants = octants.Concat(candidates).ToList(); // Cache the octants that will be updated.
                     queue = queue.Concat(candidates).ToList(); // Add the octants that will have to pass the collision test.
+                    if (candidates.Count > 0) recursions++;
                 }
             }
             else
@@ -660,13 +665,14 @@ public class RandomSpherePackingScript : MonoBehaviour
                     Sphere content = candidate.Contents[i];
                     if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                     {
-                        Debug.Log("Comparisons until collision (octree): " + comparisons);
+                        Debug.Log("Octree search (collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
                         return true;
                     }
                 }
                 List<Octant<Sphere>> candidates = OverlappedOctants(candidate, sphere, distance);
                 octants = octants.Concat(candidates).ToList();
                 queue = queue.Concat(candidates).ToList();
+                if (candidates.Count > 0) recursions++;
             }
         }
 
@@ -679,7 +685,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             if (candidate.Leaves == null) candidate.Contents.Add(sphere); // Only update the leaves of the octree.
             queue.RemoveAt(0);
         }
-        Debug.Log("Comparisons without collision (octree): " + comparisons);
+        Debug.Log("Octree search (no collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
         return false;
     }
 
@@ -698,7 +704,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             int iterations = 0;
             while (iterations < maxIterations)
             {
-                NaiveCollisionDetection(spheres, sphere, distance);
+                LinearCollisionDetection(spheres, sphere, distance);
                 RandomCollisionDetection(spheres, sphere, distance, seed);
                 if (!OctreeCollisionDetection(octree.Root, sphere, distance))
                 {
@@ -765,7 +771,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             }
 
         }
-        Debug.Log("Collision: " + SpheresCollisionDetection());
+        Debug.Log("Collision: " + ExhaustiveCollisionDetection());
         Debug.Log("Spheres: " + spheres.Count + "/" + numberOfSpheres + " (" + (spheres.Count / (float)numberOfSpheres) * 100f + "%)");
     }
 
