@@ -543,11 +543,11 @@ public class RandomSpherePackingScript : MonoBehaviour
             comparisons++;
             if (SphereIntersectsSphere(sphere.Radius, spheres[i].Radius, sphere.Centerpoint, spheres[i].Centerpoint, distance))
             {
-                Debug.Log("Comparisons until collision (naive): " + comparisons);
+                // Debug.Log("Comparisons until collision (naive): " + comparisons);
                 return false;
             }
         }
-        Debug.Log("Comparisons without collision (naive): " + comparisons);
+        // Debug.Log("Comparisons without collision (naive): " + comparisons);
         return true;
     }
 
@@ -565,12 +565,12 @@ public class RandomSpherePackingScript : MonoBehaviour
             int i = seed.Next(0, list.Count);
             if (SphereIntersectsSphere(sphere.Radius, list[i].Radius, sphere.Centerpoint, list[i].Centerpoint, distance))
             {
-                Debug.Log("Comparisons until collision (random): " + comparisons);
+                // Debug.Log("Comparisons until collision (random): " + comparisons);
                 return true;
             }
             list.RemoveAt(i);
         }
-        Debug.Log("Comparisons without collision (random): " + comparisons);
+        // Debug.Log("Comparisons without collision (random): " + comparisons);
         return false;
     }
 
@@ -613,7 +613,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                         // This is where we will test for any collision.
                         if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                         {
-                            Debug.Log("Comparisons until collision (octree): " + comparisons);
+                            // Debug.Log("Comparisons until collision (octree): " + comparisons);
                             return true;
                         }
                     }
@@ -659,7 +659,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                     Sphere content = candidate.Contents[i];
                     if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                     {
-                        Debug.Log("Comparisons until collision (octree): " + comparisons);
+                        // Debug.Log("Comparisons until collision (octree): " + comparisons);
                         return true;
                     }
                 }
@@ -678,7 +678,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             if (candidate.Leaves == null) candidate.Contents.Add(sphere); // Only update the leaves of the octree.
             queue.RemoveAt(0);
         }
-        Debug.Log("Comparisons without collision (octree): " + comparisons);
+        // Debug.Log("Comparisons without collision (octree): " + comparisons);
         return false;
     }
 
@@ -712,6 +712,18 @@ public class RandomSpherePackingScript : MonoBehaviour
             }
         }
 
+        
+        /* 
+         * GetComponent<MeshFilter>().mesh instantiates a mesh everytime it's called, so if we destroy a game object
+         * we'll also need to destroy the instantiated mesh which accompanies it. Be careful not to destroy any assets
+         * by passing only the mesh as a parameter to DestroyImmediate (the second parameter is set to false by default).
+         * This action is necessary to prevent any memory leaks.
+         */
+        foreach (Mesh mesh in Resources.FindObjectsOfTypeAll<Mesh>())
+        {
+            DestroyImmediate(mesh); 
+        }
+
         // Create a game object for each sphere.
         GameObject spheresParent = GameObject.Find("Spheres");
         if (spheresParent)
@@ -732,6 +744,8 @@ public class RandomSpherePackingScript : MonoBehaviour
                 sphereObject.name = "Sphere " + i;
                 SphereCollider sphereCollider = sphereObject.GetComponent<SphereCollider>();
                 sphereCollider.radius = spheres[i].Radius;
+
+                // Use GetComponent<MeshFilter>().sharedMesh if the radius is the same for all spheres.
                 var mesh = randomRadius ? sphereObject.GetComponent<MeshFilter>().mesh : sphereObject.GetComponent<MeshFilter>().sharedMesh;
                 var baseMeshVertices = mesh.vertices;
                 var newMeshVertices = new Vector3[baseMeshVertices.Length];
