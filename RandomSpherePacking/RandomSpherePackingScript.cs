@@ -543,11 +543,11 @@ public class RandomSpherePackingScript : MonoBehaviour
             comparisons++;
             if (SphereIntersectsSphere(sphere.Radius, spheres[i].Radius, sphere.Centerpoint, spheres[i].Centerpoint, distance))
             {
-                Debug.Log("Linear search (collision) = " + comparisons + " comparisons");
+                Debug.Log("Linear search (collision): " + comparisons + " comparisons");
                 return false;
             }
         }
-        Debug.Log("Linear search (no collision) = " + comparisons + " comparisons");
+        Debug.Log("Linear search (no collision): " + comparisons + " comparisons");
         return true;
     }
 
@@ -565,12 +565,12 @@ public class RandomSpherePackingScript : MonoBehaviour
             int i = seed.Next(0, list.Count);
             if (SphereIntersectsSphere(sphere.Radius, list[i].Radius, sphere.Centerpoint, list[i].Centerpoint, distance))
             {
-                Debug.Log("Random search (collision) = " + comparisons + " comparisons");
+                Debug.Log("Random search (collision): " + comparisons + " comparisons");
                 return true;
             }
             list.RemoveAt(i);
         }
-        Debug.Log("Random search (no collision) = " + comparisons + " comparisons");
+        Debug.Log("Random search (no collision): " + comparisons + " comparisons");
         return false;
     }
 
@@ -616,7 +616,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                         // This is where we will test for any collision.
                         if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                         {
-                            Debug.Log("Octree search (collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
+                            Debug.Log("Octree search (collision): " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
                             return true;
                         }
                     }
@@ -665,7 +665,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                     Sphere content = candidate.Contents[i];
                     if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                     {
-                        Debug.Log("Octree search (collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
+                        Debug.Log("Octree search (collision): " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
                         return true;
                     }
                 }
@@ -685,7 +685,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             if (candidate.Leaves == null) candidate.Contents.Add(sphere); // Only update the leaves of the octree.
             queue.RemoveAt(0);
         }
-        Debug.Log("Octree search (no collision) = " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
+        Debug.Log("Octree search (no collision): " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
         return false;
     }
 
