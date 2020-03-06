@@ -13,10 +13,10 @@ Contain different types of cameras that can be found in video games (only first-
 Create a 3D graph that can be dragged around inside the scene like a chain by using inverse kinematics (only works for open chains for now).
 
 ## Random sphere packing
-Create spheres inside a bounding box randomly without overlaps. Each sphere can have different size, and a minimum distance can be defined for every spheres. Three methods are used to test whether a newly inserted sphere collides with the existing ones :
-* Naive method : Iterate normally through a list of spheres until a collision occurs.
-* Random method : Iterate randomly through a list of spheres until a collision occurs.
-* Octree method : Iterate through a list of spheres occupying the space, where the new sphere landed, until a collision occurs.
+Create spheres inside a bounding box randomly without overlaps. Each sphere can have different size, and a minimum distance can be defined for every spheres. Three search methods are used to test whether a newly inserted sphere collides with the existing ones :
+* Linear search : Iterate normally through a list of spheres until a collision occurs.
+* Random search : Iterate randomly through a list of spheres until a collision occurs.
+* Octree search : Iterate through a list of spheres occupying the space, where the new sphere landed, until a collision occurs.
 
 ## Others
 Contain some accessory classes.
