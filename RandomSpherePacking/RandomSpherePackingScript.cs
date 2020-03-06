@@ -543,11 +543,11 @@ public class RandomSpherePackingScript : MonoBehaviour
             comparisons++;
             if (SphereIntersectsSphere(sphere.Radius, spheres[i].Radius, sphere.Centerpoint, spheres[i].Centerpoint, distance))
             {
-                // Debug.Log("Comparisons until collision (naive): " + comparisons);
+                Debug.Log("Comparisons until collision (naive): " + comparisons);
                 return false;
             }
         }
-        // Debug.Log("Comparisons without collision (naive): " + comparisons);
+        Debug.Log("Comparisons without collision (naive): " + comparisons);
         return true;
     }
 
@@ -565,12 +565,12 @@ public class RandomSpherePackingScript : MonoBehaviour
             int i = seed.Next(0, list.Count);
             if (SphereIntersectsSphere(sphere.Radius, list[i].Radius, sphere.Centerpoint, list[i].Centerpoint, distance))
             {
-                // Debug.Log("Comparisons until collision (random): " + comparisons);
+                Debug.Log("Comparisons until collision (random): " + comparisons);
                 return true;
             }
             list.RemoveAt(i);
         }
-        // Debug.Log("Comparisons without collision (random): " + comparisons);
+        Debug.Log("Comparisons without collision (random): " + comparisons);
         return false;
     }
 
@@ -613,14 +613,14 @@ public class RandomSpherePackingScript : MonoBehaviour
                         // This is where we will test for any collision.
                         if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                         {
-                            // Debug.Log("Comparisons until collision (octree): " + comparisons);
+                            Debug.Log("Comparisons until collision (octree): " + comparisons);
                             return true;
                         }
                     }
 
                     // Check whether the new sphere can fit inside a child of a partitioned octant.
                     bool partition = true;
-                    if (!SphereWithinBox(sphere.Radius, sphere.Centerpoint, candidate.Size / 2, sphere.Centerpoint))
+                    if (SphereWithinBox(sphere.Radius, sphere.Centerpoint, candidate.Size / 2, sphere.Centerpoint))
                     {
                         // Check whether an existing sphere can fit inside a child of a partitioned octant.
                         for (int i = 0; i < candidate.Contents.Count; i++)
@@ -632,6 +632,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                             }
                         }
                     }
+                    else partition = false;
                     // Only if the new sphere and the existing ones can fit inside a child of a partitioned octant.
                     if (partition)
                     {
@@ -659,7 +660,7 @@ public class RandomSpherePackingScript : MonoBehaviour
                     Sphere content = candidate.Contents[i];
                     if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                     {
-                        // Debug.Log("Comparisons until collision (octree): " + comparisons);
+                        Debug.Log("Comparisons until collision (octree): " + comparisons);
                         return true;
                     }
                 }
@@ -678,7 +679,7 @@ public class RandomSpherePackingScript : MonoBehaviour
             if (candidate.Leaves == null) candidate.Contents.Add(sphere); // Only update the leaves of the octree.
             queue.RemoveAt(0);
         }
-        // Debug.Log("Comparisons without collision (octree): " + comparisons);
+        Debug.Log("Comparisons without collision (octree): " + comparisons);
         return false;
     }
 
