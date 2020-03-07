@@ -581,7 +581,6 @@ public class RandomSpherePackingScript : MonoBehaviour
         int recursions = 0; // Number of times the search was split.
         int comparisons = 0; // Number of existing spheres that have been tested against the new sphere.
         List<Octant<Sphere>> queue = new List<Octant<Sphere>>(); // Octants that can contain spheres that will collide with the new one.
-        List<Octant<Sphere>> octants = new List<Octant<Sphere>>(); // Octants that will be updated if they passed the collision test.
 
         // Insert the first sphere.
         if (octant.Contents.Count == 0)
@@ -612,8 +611,8 @@ public class RandomSpherePackingScript : MonoBehaviour
                     {
                         comparisons++;
                         Sphere content = candidate.Contents[i];
-                        
-                        // This is where we will test for any collision.
+
+                        // This is where we will detect any collision.
                         if (SphereIntersectsSphere(sphere.Radius, content.Radius, sphere.Centerpoint, content.Centerpoint, distance))
                         {
                             Debug.Log("Octree search (collision): " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
@@ -622,40 +621,18 @@ public class RandomSpherePackingScript : MonoBehaviour
                     }
 
                     // Check whether the new sphere can fit inside a child of a partitioned octant.
-                    bool partition = true;
                     if (SphereWithinBox(sphere.Radius, sphere.Centerpoint, candidate.Size / 2, sphere.Centerpoint))
                     {
                         // Check whether an existing sphere can fit inside a child of a partitioned octant.
                         for (int i = 0; i < candidate.Contents.Count; i++)
                         {
-                            if (!SphereWithinBox(candidate.Contents[i].Radius, candidate.Contents[i].Centerpoint, candidate.Size / 2, candidate.Contents[i].Centerpoint))
-                            {
-                                partition = false;
-                                break;
-                            }
+                            if (!SphereWithinBox(candidate.Contents[i].Radius, candidate.Contents[i].Centerpoint, 
+                                candidate.Size / 2, candidate.Contents[i].Centerpoint)) break;
                         }
-                    }
-                    else partition = false;
-
-                    // Only partition an octant if its children can contain the new sphere and the existing ones.
-                    if (partition)
-                    {
                         candidate.Partition();
-                        for (int i = 0; i < candidate.Contents.Count; i++)
-                        {
-                            // Propagate the contents of an octant to its children.
-                            List<Octant<Sphere>> list = OverlappedOctants(candidate, candidate.Contents[i], distance);
-                            for (int j = 0; j < list.Count; j++)
-                            {
-                                candidate.Leaves[list[j].Index].Contents.Add(candidate.Contents[i]);
-                            }
-                        }
                     }
-                    List<Octant<Sphere>> candidates = OverlappedOctants(candidate, sphere, distance);
-                    octants = octants.Concat(candidates).ToList(); // Cache the octants that will be updated.
-                    queue = queue.Concat(candidates).ToList(); // Add the octants that will have to pass the collision test.
-                    if (candidates.Count > 0) recursions++;
                 }
+                candidate.Contents.Add(sphere);
             }
             else
             {
@@ -670,20 +647,9 @@ public class RandomSpherePackingScript : MonoBehaviour
                     }
                 }
                 List<Octant<Sphere>> candidates = OverlappedOctants(candidate, sphere, distance);
-                octants = octants.Concat(candidates).ToList();
                 queue = queue.Concat(candidates).ToList();
                 if (candidates.Count > 0) recursions++;
             }
-        }
-
-        // Update the octree if no collision has been detected.
-        queue.Add(octant); // Start with the root.
-        queue = queue.Concat(octants).ToList(); // Add the octants overlapped by the new sphere.
-        while (queue.Count > 0)
-        {
-            Octant<Sphere> candidate = queue[0];
-            if (candidate.Leaves == null) candidate.Contents.Add(sphere); // Only update the leaves of the octree.
-            queue.RemoveAt(0);
         }
         Debug.Log("Octree search (no collision): " + recursions + " recursions + " + visits + " visits + " + comparisons + " comparisons");
         return false;
