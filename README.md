@@ -26,3 +26,4 @@ Contain some accessory classes :
 * ConstrainedFloat : Wrapper class for floating numbers with lower bound and upper bound.
 * ConstrainedVector3 : Wrapper class for Vector3 with lower bound and upper bound.
 * SerializableMatrix1D : One-dimensional matrix that can be serialized.
+* Utilities : Contain methods that search for objects in the scene.
