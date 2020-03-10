@@ -25,4 +25,4 @@ Contain some accessory classes :
 * MouseDragScript : Make a game object in the scene draggable.
 * ConstrainedFloat : Wrapper class for floating numbers with lower bound and upper bound.
 * ConstrainedVector3 : Wrapper class for Vector3 with lower bound and upper bound.
-* SerializedMatrix1D : One-dimensional matrix that can be serialized.
+* SerializableMatrix1D : One-dimensional matrix that can be serialized.
