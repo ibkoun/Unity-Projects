@@ -8,7 +8,7 @@ public class FirstPersonCameraScript : MonoBehaviour
     [SerializeField] private float rotationSmoothness;
     [SerializeField] private ConstrainedVector3 rotationConstraints;
 
-    public Vector3 displacement, angularDisplacement;
+    private Vector3 displacement, angularDisplacement;
 
     public float MovementSpeed
     {
@@ -61,9 +61,16 @@ public class FirstPersonCameraScript : MonoBehaviour
         SmoothlyTranslate(Space.Self);
     }
 
+    private void LateUpdate()
+    {
+        CameraTransform.localRotation = Quaternion.Slerp(CameraTransform.localRotation, Rotation, Time.deltaTime / (rotationSmoothness / 100));
+        CameraTransform.localPosition = Vector3.Lerp(CameraTransform.localPosition, Position, Time.deltaTime / (movementSmoothness / 100));
+        //CameraTransform.localPosition = Vector3.MoveTowards(CameraTransform.localPosition, Position, Time.deltaTime / (movementSmoothness / 100));
+    }
+
     public void SmoothlyRotate(Space space)
     {
-        // Rotation done with the mouse scRollwheel is too slow, so we need to multiply by another value.
+        // Rotation done with the mouse scrollwheel is too slow, so we need to multiply the speed by another value.
         angularDisplacement.z = Input.GetAxis("Mouse ScrollWheel") * rotationSpeed * 10f;
         angularDisplacement.x = -Input.GetAxis("Mouse Y") * rotationSpeed;
         angularDisplacement.y = Input.GetAxis("Mouse X") * rotationSpeed;
@@ -93,7 +100,6 @@ public class FirstPersonCameraScript : MonoBehaviour
                     Rotation;
                 break;
         }
-        CameraTransform.localRotation = Quaternion.Slerp(CameraTransform.localRotation, Rotation, Time.deltaTime / (rotationSmoothness / 100));
     }
 
     public void SmoothlyTranslate(Space space)
@@ -112,9 +118,6 @@ public class FirstPersonCameraScript : MonoBehaviour
                 Position += CameraTransform.TransformDirection(displacement); 
                 break;
         }
-        // Choose Vector3.Lerp or Vector3.MoveTowards based on preference.
-        CameraTransform.localPosition = Vector3.Lerp(CameraTransform.localPosition, Position, Time.deltaTime / (movementSmoothness / 100));
-        //CameraTransform.localPosition = Vector3.MoveTowards(CameraTransform.localPosition, Position, Time.deltaTime / (movementSmoothness / 100));
     }
 }
 
