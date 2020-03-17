@@ -25,15 +25,9 @@ Create spheres inside a bounding box at random without overlaps. The spheres can
 * Octree search : Iterate through a list of spheres occupying a space (where the new sphere landed) until a collision occurs.
 
 <div class="row" align="center">
-  <div class="column">
-    <img src="Demo/random_sphere_packing_demo1.PNG" width="250" align="center">
-  </div>
-  <div class="column">
-    <img src="Demo/random_sphere_packing_demo2.PNG" width="250" align="center">
-  </div>
-  <div class="column">
-    <img src="Demo/random_sphere_packing_demo3.PNG" width="250" align="center">
-  </div>
+  <img src="Demo/random_sphere_packing_demo1.PNG" width="250" align="center">
+  <img src="Demo/random_sphere_packing_demo2.PNG" width="250" align="center">
+  <img src="Demo/random_sphere_packing_demo3.PNG" width="250" align="center">
 </div>
 
 ## Others
