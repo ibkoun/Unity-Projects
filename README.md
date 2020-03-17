@@ -19,7 +19,7 @@ Create a 3D graph that can be dragged around with the mouse inside the scene lik
 </div>
 
 ## Random sphere packing
-Create spheres inside a bounding box at random without overlaps. The spheres can have their sizes randomized and have a minimum distance separating each of them. Three search methods are used to test whether a newly inserted sphere collides with the existing ones (without using the game engine collision detection) :
+Create spheres inside a bounding box at random without overlaps. The spheres can have their sizes randomized and have a minimum distance separating each of them. Three search methods are used to test whether a newly inserted sphere collides with the existing ones (without using the built-in collision detection) :
 * Linear search : Iterate normally through a list of spheres until a collision occurs.
 * Random search : Iterate randomly through a list of spheres until a collision occurs.
 * Octree search : Iterate through a list of spheres occupying a space (where the new sphere landed) until a collision occurs.
