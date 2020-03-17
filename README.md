@@ -21,7 +21,7 @@ Create spheres inside a bounding box at random without overlaps. The spheres can
 * Linear search : Iterate normally through a list of spheres until a collision occurs.
 * Random search : Iterate randomly through a list of spheres until a collision occurs.
 * Octree search : Iterate through a list of spheres occupying a space (where the new sphere landed) until a collision occurs.
-<img src="Demo/random_sphere_packing_demo1.PNG" width="100">
+<img src="Demo/random_sphere_packing_demo1.PNG" width="728">
 
 ## Others
 Contain some accessory classes :
