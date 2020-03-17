@@ -14,7 +14,7 @@ Contain different types of cameras that can be found in video games :
 ## Graph
 Create a 3D graph that can be dragged around with the mouse inside the scene like a chain by using inverse kinematics (only works for open chains for now).
 
-<img src="Demo/graph_scene_demo.gif" width="468">
+<img src="Demo/graph_scene_demo.gif" width="468" align="middle">
 
 ## Random sphere packing
 Create spheres inside a bounding box at random without overlaps. The spheres can have their sizes randomized and have a minimum distance separating each of them. Three search methods are used to test whether a newly inserted sphere collides with the existing ones (without using the game engine collision detection) :
